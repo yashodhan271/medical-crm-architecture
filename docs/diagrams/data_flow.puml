@@ -1,0 +1,37 @@
+@startuml
+!define RECTANGLE class
+
+skinparam sequence {
+    ArrowColor #2C3E50
+    LifeLineBackgroundColor #ECF0F1
+    ParticipantBackgroundColor #ECF0F1
+}
+
+actor User
+participant "Client App" as client
+participant "API Gateway" as gateway
+participant "Auth Service" as auth
+participant "Microservice" as service
+database "Database" as db
+queue "Message Queue" as mq
+
+User -> client: Action Request
+client -> gateway: API Request
+gateway -> auth: Validate Token
+
+alt Valid Token
+    auth --> gateway: Token Valid
+    gateway -> service: Process Request
+    service -> db: Data Operation
+    db --> service: Data Response
+    service -> mq: Event Publication
+    service --> gateway: Response
+    gateway --> client: API Response
+    client --> User: Action Response
+else Invalid Token
+    auth --> gateway: Token Invalid
+    gateway --> client: 401 Unauthorized
+    client --> User: Error Message
+end
+
+@enduml

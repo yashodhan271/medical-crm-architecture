@@ -1,0 +1,67 @@
+@startuml
+!define RECTANGLE class
+
+skinparam componentStyle uml2
+skinparam component {
+  BorderColor #2C3E50
+  BackgroundColor #ECF0F1
+  ArrowColor #2C3E50
+}
+
+cloud "Client Layer" {
+  [Web Application]
+  [Mobile Application]
+  [Admin Dashboard]
+}
+
+rectangle "API Gateway" {
+  [Authentication]
+  [Rate Limiting]
+  [Request Routing]
+}
+
+rectangle "Microservices" {
+  [Patient Service]
+  [Appointment Service]
+  [Communication Service]
+  [Billing Service]
+  [Analytics Service]
+  [Integration Service]
+}
+
+database "Data Layer" {
+  [PostgreSQL]
+  [MongoDB]
+  [Redis Cache]
+  [Message Queue]
+}
+
+cloud "External Systems" {
+  [EMR/EHR]
+  [Payment Gateway]
+  [Telehealth Platform]
+}
+
+[Web Application] --> [API Gateway]
+[Mobile Application] --> [API Gateway]
+[Admin Dashboard] --> [API Gateway]
+
+[API Gateway] --> [Patient Service]
+[API Gateway] --> [Appointment Service]
+[API Gateway] --> [Communication Service]
+[API Gateway] --> [Billing Service]
+[API Gateway] --> [Analytics Service]
+[API Gateway] --> [Integration Service]
+
+[Patient Service] --> [PostgreSQL]
+[Appointment Service] --> [PostgreSQL]
+[Communication Service] --> [MongoDB]
+[Billing Service] --> [PostgreSQL]
+[Analytics Service] --> [Redis Cache]
+[Integration Service] --> [Message Queue]
+
+[Integration Service] --> [EMR/EHR]
+[Billing Service] --> [Payment Gateway]
+[Communication Service] --> [Telehealth Platform]
+
+@enduml

@@ -1,0 +1,73 @@
+@startuml
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <u>x</u>
+!define foreign_key(x) #x#
+
+skinparam class {
+    BackgroundColor #ECF0F1
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+
+table(Patients) {
+    primary_key(patient_id): UUID
+    first_name: VARCHAR
+    last_name: VARCHAR
+    date_of_birth: DATE
+    contact_info: JSONB
+    medical_history: JSONB
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(Appointments) {
+    primary_key(appointment_id): UUID
+    foreign_key(patient_id): UUID
+    foreign_key(doctor_id): UUID
+    appointment_date: TIMESTAMP
+    status: VARCHAR
+    notes: TEXT
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(Doctors) {
+    primary_key(doctor_id): UUID
+    first_name: VARCHAR
+    last_name: VARCHAR
+    specialization: VARCHAR
+    contact_info: JSONB
+    schedule: JSONB
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(Billing) {
+    primary_key(bill_id): UUID
+    foreign_key(patient_id): UUID
+    foreign_key(appointment_id): UUID
+    amount: DECIMAL
+    status: VARCHAR
+    payment_method: VARCHAR
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(Communications) {
+    primary_key(communication_id): UUID
+    foreign_key(patient_id): UUID
+    foreign_key(doctor_id): UUID
+    type: VARCHAR
+    content: TEXT
+    status: VARCHAR
+    created_at: TIMESTAMP
+}
+
+Patients "1" -- "many" Appointments
+Doctors "1" -- "many" Appointments
+Patients "1" -- "many" Billing
+Appointments "1" -- "1" Billing
+Patients "1" -- "many" Communications
+Doctors "1" -- "many" Communications
+
+@enduml
